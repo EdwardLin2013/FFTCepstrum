@@ -48,6 +48,7 @@
     int                 _bin;
     UInt32              _sampleRate;
     UInt32              _framesSize;
+    Float32             _overlap;
     
     Float32             _Interval;
     Float32             _X;

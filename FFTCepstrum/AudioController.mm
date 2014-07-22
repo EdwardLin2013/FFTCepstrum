@@ -1,51 +1,10 @@
-/*
- 
-     File: AudioController.mm
- Abstract: n/a
-  Version: 2.0
- 
- Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple
- Inc. ("Apple") in consideration of your agreement to the following
- terms, and your use, installation, modification or redistribution of
- this Apple software constitutes acceptance of these terms.  If you do
- not agree with these terms, please do not use, install, modify or
- redistribute this Apple software.
- 
- In consideration of your agreement to abide by the following terms, and
- subject to these terms, Apple grants you a personal, non-exclusive
- license, under Apple's copyrights in this original Apple software (the
- "Apple Software"), to use, reproduce, modify and redistribute the Apple
- Software, with or without modifications, in source and/or binary forms;
- provided that if you redistribute the Apple Software in its entirety and
- without modifications, you must retain this notice and the following
- text and disclaimers in all such redistributions of the Apple Software.
- Neither the name, trademarks, service marks or logos of Apple Inc. may
- be used to endorse or promote products derived from the Apple Software
- without specific prior written permission from Apple.  Except as
- expressly stated in this notice, no other rights or licenses, express or
- implied, are granted by Apple herein, including but not limited to any
- patent rights that may be infringed by your derivative works or by other
- works in which the Apple Software may be incorporated.
- 
- The Apple Software is provided by Apple on an "AS IS" basis.  APPLE
- MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION
- THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS
- FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND
- OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS.
- 
- IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL
- OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION,
- MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED
- AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE),
- STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE
- POSSIBILITY OF SUCH DAMAGE.
- 
- Copyright (C) 2014 Apple Inc. All Rights Reserved.
- 
- 
- */
+//
+//  AudioController.mm
+//  SingingPitchCoach
+//
+//  Created by Edward on 22/7/14.
+//  Copyright (c) 2014 Edward. All rights reserved.
+//
 #import "AudioController.h"
 
 struct CallbackData {
@@ -81,27 +40,32 @@ static OSStatus	performRender (void                         *inRefCon,
         // filter out the DC component of the signal
         cd.dcRejectionFilter->ProcessInplace((Float32*) ioData->mBuffers[0].mData, inNumberFrames);
         
-        // fill up the buffer for Audio Wave
-        cd.bufferManager->CopyAudioDataToWaveBuffer((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
+        // fill up the audioDataBuffer
+        cd.bufferManager->CopyAudioDataToBuffer((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
         
-        // fill up the buffer for FFT
-        if (cd.bufferManager->NeedsNewFFTData())
-        {
-            //cd.bufferManager->CopyAudioDataToFFTInputBuffer((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
-            cd.bufferManager->CopyAudioDataToFFTInputBufferVer2((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
-        }
-        
-        // Do the recording if needed
-        if (cd.isRecording)
-        {
-            if (inNumberFrames > 0)
-            {
-                // write packets to file
-                err = AudioFileWritePackets(cd.WaveFile, FALSE, inNumberFrames, NULL, cd.currentFramesWave, &inNumberFrames, ioData->mBuffers[0].mData);
-                cd.currentFramesWave += inNumberFrames;
-                //NSLog(@"cd.currentFramesWave: %lld", cd.currentFramesWave);
-            }
-        }
+        /*
+         // fill up the buffer for Audio Wave
+         cd.bufferManager->CopyAudioDataToWaveBuffer((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
+         
+         // fill up the buffer for FFT
+         if (cd.bufferManager->NeedsNewFFTData())
+         {
+         //cd.bufferManager->CopyAudioDataToFFTInputBuffer((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
+         cd.bufferManager->CopyAudioDataToFFTInputBufferVer2((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
+         }
+         
+         // Do the recording if needed
+         if (cd.isRecording)
+         {
+         if (inNumberFrames > 0)
+         {
+         // write packets to file
+         err = AudioFileWritePackets(cd.WaveFile, FALSE, inNumberFrames, NULL, cd.currentFramesWave, &inNumberFrames, ioData->mBuffers[0].mData);
+         cd.currentFramesWave += inNumberFrames;
+         //NSLog(@"cd.currentFramesWave: %lld", cd.currentFramesWave);
+         }
+         }
+         */
         
         // mute audio if needed....mute the echo?
         for (UInt32 i=0; i<ioData->mNumberBuffers; ++i)
@@ -113,7 +77,8 @@ static OSStatus	performRender (void                         *inRefCon,
 
 @implementation AudioController
 
-- (id)init:(UInt32)NewSampleRate FrameSize:(UInt32)NewFrameSize
+/* -----------------------------Public Methods--------------------------------- Begin */
+- (id)init:(UInt32)NewSampleRate FrameSize:(UInt32)NewFrameSize OverLap:(Float32)NewOverlap
 {
     if (self = [super init])
     {
@@ -122,6 +87,17 @@ static OSStatus	performRender (void                         *inRefCon,
         
         _sampleRate = NewSampleRate;
         _framesSize = NewFrameSize;
+        _Overlap = NewOverlap;
+        
+        _frequency = 0;
+        _midiNum = 0;
+        _pitch = @"nil";
+        
+        _pitchEstimatedScheduler = NULL;
+        
+        _Hz120 = floor(120*(float)_framesSize/(float)_sampleRate);
+        _Hz530 = floor(530*(float)_framesSize/(float)_sampleRate);
+        _Hz1100 = floor(1100*(float)_framesSize/(float)_sampleRate);
         
         _isRecording = NO;
         _FileNameWave = @"audioWave.wav";
@@ -131,8 +107,82 @@ static OSStatus	performRender (void                         *inRefCon,
     }
     return self;
 }
+- (OSStatus)startIOUnit
+{
+    OSStatus err = AudioOutputUnitStart(_rioUnit);
+    if (err) NSLog(@"couldn't start AURemoteIO: %d", (int)err);
+    
+    NSTimeInterval interval = (double)(((1-_Overlap)*(Float32)_framesSize)/(Float32)_sampleRate);
+    
+    // Also start the Pitch Estimation
+    _pitchEstimatedScheduler = [NSTimer scheduledTimerWithTimeInterval:interval
+                                                                target:self
+                                                              selector:@selector(EstimatePitch)
+                                                              userInfo:nil
+                                                               repeats:YES];
 
+    return err;
+}
+- (OSStatus)stopIOUnit
+{
+    OSStatus err = AudioOutputUnitStop(_rioUnit);
+    if (err) NSLog(@"couldn't stop AURemoteIO: %d", (int)err);
+    
+    // Stop the Pitch Estimation
+    [_pitchEstimatedScheduler invalidate];
+    _pitchEstimatedScheduler = NULL;
+    
+    return err;
+}
+- (void)EstimatePitch
+{
+    if (_bufferManager != NULL)
+    {
+        if(_bufferManager->HasNewFFTData())
+        {
+            Float32 fftData[_framesSize];
+            Float32 cepstrumData[_framesSize];
+            Float32 fftcepstrumData[_framesSize];
+            Float32 _curAmp;
+            
+            [self GetFFTOutput:fftData];
+            _bufferManager->GetCepstrumOutput(fftData, cepstrumData);
+            _bufferManager->GetFFTCepstrumOutput(fftData, cepstrumData, fftcepstrumData);
+            
+            Float32 _maxAmp = -INFINITY;
+            int _bin = _Hz120;
+            for (int i=_Hz120; i<=_Hz1100; i++)
+            {
+                _curAmp = fftcepstrumData[i];
+                if (_curAmp > _maxAmp)
+                {
+                    _maxAmp = _curAmp;
+                    _bin = i;
+                }
+            }
+            
+            _frequency = _bin*((float)_sampleRate/(float)_framesSize);
+            _midiNum = [self freqToMIDI:_frequency];
+            _pitch = [self midiToPitch:_midiNum];
+            //NSLog(@"Current: %.12f %d %.12f %@", _frequency, _bin, _midiNum, _pitch);
+        }
+    }
+}
+- (Float32)CurrentFreq
+{
+    return _frequency;
+}
+- (Float32)CurrentMIDI
+{
+    return _midiNum;
+}
+- (NSString*)CurrentPitch
+{
+    return _pitch;
+}
+/* -----------------------------Public Methods--------------------------------- End */
 
+/* -----------------------------Private Methods--------------------------------- Begin */
 - (void)setupAudioChain
 {
     [self setupAudioSession];
@@ -227,7 +277,7 @@ static OSStatus	performRender (void                         *inRefCon,
         UInt32 propSize = sizeof(UInt32);
         XThrowIfError(AudioUnitGetProperty(_rioUnit, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &_framesSize, &propSize), "couldn't get max frames per slice on AURemoteIO");
         
-        _bufferManager = new BufferManager(_framesSize);
+        _bufferManager = new BufferManager(_framesSize, _sampleRate, _Overlap);
         _dcRejectionFilter = new DCRejectionFilter;
         
         // We need references to certain data in the render callback
@@ -337,19 +387,6 @@ static OSStatus	performRender (void                         *inRefCon,
     _audioChainIsBeingReconstructed = NO;
 }
 
-- (OSStatus)startIOUnit
-{
-    OSStatus err = AudioOutputUnitStart(_rioUnit);
-    if (err) NSLog(@"couldn't start AURemoteIO: %d", (int)err);
-    return err;
-}
-- (OSStatus)stopIOUnit
-{
-    OSStatus err = AudioOutputUnitStop(_rioUnit);
-    if (err) NSLog(@"couldn't stop AURemoteIO: %d", (int)err);
-    return err;
-}
-
 - (BufferManager*)getBufferManagerInstance
 {
     return _bufferManager;
@@ -412,7 +449,7 @@ static OSStatus	performRender (void                         *inRefCon,
     // Do the recording if needed
     if (_isRecording==YES && _bufferManager->HasNewFFTData())
     {
-        const void* fftData = _bufferManager->GetFFTInputBuffers();
+        const void* fftData = _bufferManager->GetFFTBuffers();
         
         // write packets to file
         UInt32 inNumberFrames = _framesSize;
@@ -437,14 +474,14 @@ static OSStatus	performRender (void                         *inRefCon,
         return 12*log2f(frequency/440) + 69;
 }
 - (NSString*)midiToPitch:(Float32)midiNote
-{    
+{
     if (midiNote<=-1)
         return @"NIL";
-
+    
     int midi = (int)round((double)midiNote);
     NSArray *noteStrings = [[NSArray alloc] initWithObjects:@"C", @"C#", @"D", @"D#", @"E", @"F", @"F#", @"G", @"G#", @"A", @"A#", @"B", nil];
     NSString *retval = [noteStrings objectAtIndex:midi%12];
-
+    
     if(midi <= 23)
         retval = [retval stringByAppendingString:@"0"];
     else if(midi <= 35)
@@ -463,7 +500,9 @@ static OSStatus	performRender (void                         *inRefCon,
         retval = [retval stringByAppendingString:@"7"];
     else
         retval = [retval stringByAppendingString:@"8"];
-
+    
     return retval;
 }
+/* -----------------------------Private Methods--------------------------------- Begin */
+
 @end

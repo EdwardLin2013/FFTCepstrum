@@ -27,13 +27,15 @@
         [self addChild:_graph];
         
         /* Setup Microphone, Buffer Manager and FFTCepstrum mechanism */
-        //_sampleRate = 22050;
-        _sampleRate = 44100;
-        //_framesSize = 2048;
-        _framesSize = 4096;
+        _sampleRate = 22050;
+        //_sampleRate = 44100;
+        //_framesSize = 4096;
         //_framesSize = 8192;
+        _framesSize = 16384;
+        //_overlap = 0;
+        _overlap = 50;
         
-        _audioController = [[AudioController alloc] init:_sampleRate FrameSize:_framesSize];
+        _audioController = [[AudioController alloc] init:_sampleRate FrameSize:_framesSize OverLap:_overlap];
         _bufferManager = [_audioController getBufferManagerInstance];
         _l_fftData = (Float32*) calloc(_framesSize, sizeof(Float32));
         _l_cepstrumData = (Float32*) calloc(_framesSize, sizeof(Float32));
@@ -51,8 +53,8 @@
         [_waveLine setStrokeColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:1]];
         [self addChild:_waveLine];
         
-        _waveInterval = 300/(float)(_bufferManager->GetWaveBufferLength());
-        _waveLength = _bufferManager->GetWaveBufferLength();
+        _waveInterval = 300/(float)(_framesSize);
+        _waveLength = _framesSize;
         _sampleStep = _waveLength/1024;
         
         /* Setup UI for FFT */
@@ -122,10 +124,10 @@
 -(void)update:(CFTimeInterval)currentTime
 {
     /* Called before each frame is rendered */
+    /*
     int i;
     bool nanOccur = NO;
-    Float32** waveBuffers = _bufferManager->GetWaveBuffers();
-    Float32** fftBuffers = _bufferManager->GetFFTBuffers();
+    Float32* waveBuffers = _bufferManager->GetFFTBuffers();
     CGMutablePathRef path;
     
     // Draw the latest audio wave to prevent from dropping fps too much
@@ -137,7 +139,7 @@
         for (i=0; i<_waveLength; i+=_sampleStep)
         {
             _waveX = 20 + (i*_waveInterval);
-            _waveY = 507 + (waveBuffers[0][i]*100);
+            _waveY = 507 + (waveBuffers[i]*100);
             CGPathAddLineToPoint(path, NULL, _waveX, _waveY);
         }
         _waveLine.path = path;
@@ -162,8 +164,6 @@
             else
                 _Y = 304 + (_l_fftData[i]*2);
             CGPathAddLineToPoint(path, NULL, _X, _Y);
-            
-            fftBuffers[0][i] = _l_fftData[i];
             
             if (isnan(_l_fftData[i])) nanOccur = YES;
             
@@ -191,6 +191,7 @@
         _bufferManager->GetCepstrumOutput(_l_fftData, _l_cepstrumData);
 
         // Fill out the path
+        /*
         path = CGPathCreateMutable();
         CGPathMoveToPoint(path, NULL, 20, 162);
         for (i=0; i<=_Hz1200; i++)
@@ -250,7 +251,8 @@
         _frequency = _bin*((float)_sampleRate/(float)_framesSize);
         _midiNum = [_audioController freqToMIDI:_frequency];
         _pitch = [_audioController midiToPitch:_midiNum];
-        NSLog(@"Current: %.12f %d %.12f %@", _frequency, _bin, _midiNum, _pitch);
+        NSLog(@"Update(): %.12f %d %.12f %@", _frequency, _bin, _midiNum, _pitch);
+        //NSLog(@"Schedular(): %.12f %d %.12f %@", [_audioController CurrentFreq], _bin, [_audioController CurrentMIDI], [_audioController CurrentPitch]);
         
         // if the result of fft or cepstrum is nan, most likely a silent has occured.
         /*
@@ -271,13 +273,13 @@
         }
         */
         
-        // Ready for next FFT data
-        _bufferManager->CycleFFTBuffers();
-        
+        /*
         memset(_l_fftData, 0, _framesSize*sizeof(Float32));
         memset(_l_cepstrumData, 0, _framesSize*sizeof(Float32));
         memset(_l_fftcepstrumData, 0, _framesSize*sizeof(Float32));
     }
+         */
+    NSLog(@"Schedular(): %.12f %d %.12f %@", [_audioController CurrentFreq], _bin, [_audioController CurrentMIDI], [_audioController CurrentPitch]);
 }
 
 @end
