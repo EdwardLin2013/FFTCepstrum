@@ -1,0 +1,569 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2B0F41FE1972AA6F00214A26 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F41FD1972AA6F00214A26 /* Foundation.framework */; };
+		2B0F42001972AA6F00214A26 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F41FF1972AA6F00214A26 /* CoreGraphics.framework */; };
+		2B0F42021972AA6F00214A26 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F42011972AA6F00214A26 /* UIKit.framework */; };
+		2B0F42041972AA6F00214A26 /* SpriteKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F42031972AA6F00214A26 /* SpriteKit.framework */; };
+		2B0F420A1972AA6F00214A26 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2B0F42081972AA6F00214A26 /* InfoPlist.strings */; };
+		2B0F420C1972AA6F00214A26 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F420B1972AA6F00214A26 /* main.m */; };
+		2B0F42101972AA6F00214A26 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F420F1972AA6F00214A26 /* AppDelegate.m */; };
+		2B0F42131972AA6F00214A26 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2B0F42111972AA6F00214A26 /* Main.storyboard */; };
+		2B0F42161972AA6F00214A26 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42151972AA6F00214A26 /* ViewController.mm */; };
+		2B0F42191972AA6F00214A26 /* MyScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42181972AA6F00214A26 /* MyScene.mm */; };
+		2B0F421D1972AA6F00214A26 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B0F421C1972AA6F00214A26 /* Images.xcassets */; };
+		2B0F42241972AA6F00214A26 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F42231972AA6F00214A26 /* XCTest.framework */; };
+		2B0F42251972AA7000214A26 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F41FD1972AA6F00214A26 /* Foundation.framework */; };
+		2B0F42261972AA7000214A26 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F42011972AA6F00214A26 /* UIKit.framework */; };
+		2B0F422E1972AA7000214A26 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2B0F422C1972AA7000214A26 /* InfoPlist.strings */; };
+		2B0F42301972AA7000214A26 /* FFTCepstrumTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F422F1972AA7000214A26 /* FFTCepstrumTests.m */; };
+		2B0F423A1972AAA100214A26 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F42391972AAA100214A26 /* AVFoundation.framework */; };
+		2B0F423C1972AAA800214A26 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F423B1972AAA800214A26 /* Accelerate.framework */; };
+		2B0F423E1972AAB700214A26 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0F423D1972AAB700214A26 /* AudioToolbox.framework */; };
+		2B0F42481972ABE200214A26 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42411972ABE200214A26 /* CADebugMacros.cpp */; };
+		2B0F42491972ABE200214A26 /* CAStreamBasicDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42441972ABE200214A26 /* CAStreamBasicDescription.cpp */; };
+		2B0F424A1972ABE200214A26 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42461972ABE200214A26 /* CAXException.cpp */; };
+		2B0F424D1972AC0300214A26 /* background.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 2B0F424C1972AC0300214A26 /* background.atlas */; };
+		2B0F42511972AC8D00214A26 /* AudioController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42501972AC8D00214A26 /* AudioController.mm */; };
+		2B0F42561972AC9D00214A26 /* BufferManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42521972AC9D00214A26 /* BufferManager.cpp */; };
+		2B0F42571972AC9D00214A26 /* DCRejectionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42541972AC9D00214A26 /* DCRejectionFilter.cpp */; };
+		2B0F425A1972ACA900214A26 /* WaveFFTCepstrumHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42581972ACA900214A26 /* WaveFFTCepstrumHelper.cpp */; };
+		2B105A4B19783314008528CB /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B105A4A19783314008528CB /* CoreAudio.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2B0F42271972AA7000214A26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2B0F41F21972AA6F00214A26 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2B0F41F91972AA6F00214A26;
+			remoteInfo = FFTCepstrum;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2B0F41FA1972AA6F00214A26 /* FFTCepstrum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FFTCepstrum.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B0F41FD1972AA6F00214A26 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		2B0F41FF1972AA6F00214A26 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		2B0F42011972AA6F00214A26 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2B0F42031972AA6F00214A26 /* SpriteKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SpriteKit.framework; path = System/Library/Frameworks/SpriteKit.framework; sourceTree = SDKROOT; };
+		2B0F42071972AA6F00214A26 /* FFTCepstrum-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FFTCepstrum-Info.plist"; sourceTree = "<group>"; };
+		2B0F42091972AA6F00214A26 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2B0F420B1972AA6F00214A26 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2B0F420D1972AA6F00214A26 /* FFTCepstrum-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FFTCepstrum-Prefix.pch"; sourceTree = "<group>"; };
+		2B0F420E1972AA6F00214A26 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2B0F420F1972AA6F00214A26 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2B0F42121972AA6F00214A26 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		2B0F42141972AA6F00214A26 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		2B0F42151972AA6F00214A26 /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
+		2B0F42171972AA6F00214A26 /* MyScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyScene.h; sourceTree = "<group>"; };
+		2B0F42181972AA6F00214A26 /* MyScene.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MyScene.mm; sourceTree = "<group>"; };
+		2B0F421C1972AA6F00214A26 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		2B0F42221972AA6F00214A26 /* FFTCepstrumTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FFTCepstrumTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B0F42231972AA6F00214A26 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		2B0F422B1972AA7000214A26 /* FFTCepstrumTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FFTCepstrumTests-Info.plist"; sourceTree = "<group>"; };
+		2B0F422D1972AA7000214A26 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2B0F422F1972AA7000214A26 /* FFTCepstrumTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FFTCepstrumTests.m; sourceTree = "<group>"; };
+		2B0F42391972AAA100214A26 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		2B0F423B1972AAA800214A26 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		2B0F423D1972AAB700214A26 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		2B0F42401972ABE200214A26 /* CABitOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CABitOperations.h; sourceTree = "<group>"; };
+		2B0F42411972ABE200214A26 /* CADebugMacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CADebugMacros.cpp; sourceTree = "<group>"; };
+		2B0F42421972ABE200214A26 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
+		2B0F42431972ABE200214A26 /* CAMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAMath.h; sourceTree = "<group>"; };
+		2B0F42441972ABE200214A26 /* CAStreamBasicDescription.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAStreamBasicDescription.cpp; sourceTree = "<group>"; };
+		2B0F42451972ABE200214A26 /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
+		2B0F42461972ABE200214A26 /* CAXException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CAXException.cpp; sourceTree = "<group>"; };
+		2B0F42471972ABE200214A26 /* CAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAXException.h; sourceTree = "<group>"; };
+		2B0F424B1972ABF700214A26 /* CADebugPrintf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CADebugPrintf.h; sourceTree = "<group>"; };
+		2B0F424C1972AC0300214A26 /* background.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = background.atlas; sourceTree = "<group>"; };
+		2B0F424F1972AC8D00214A26 /* AudioController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioController.h; sourceTree = "<group>"; };
+		2B0F42501972AC8D00214A26 /* AudioController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioController.mm; sourceTree = "<group>"; };
+		2B0F42521972AC9D00214A26 /* BufferManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BufferManager.cpp; sourceTree = "<group>"; };
+		2B0F42531972AC9D00214A26 /* BufferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferManager.h; sourceTree = "<group>"; };
+		2B0F42541972AC9D00214A26 /* DCRejectionFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DCRejectionFilter.cpp; sourceTree = "<group>"; };
+		2B0F42551972AC9D00214A26 /* DCRejectionFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCRejectionFilter.h; sourceTree = "<group>"; };
+		2B0F42581972ACA900214A26 /* WaveFFTCepstrumHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WaveFFTCepstrumHelper.cpp; sourceTree = "<group>"; };
+		2B0F42591972ACA900214A26 /* WaveFFTCepstrumHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaveFFTCepstrumHelper.h; sourceTree = "<group>"; };
+		2B105A4A19783314008528CB /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2B0F41F71972AA6F00214A26 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B105A4B19783314008528CB /* CoreAudio.framework in Frameworks */,
+				2B0F423E1972AAB700214A26 /* AudioToolbox.framework in Frameworks */,
+				2B0F423C1972AAA800214A26 /* Accelerate.framework in Frameworks */,
+				2B0F423A1972AAA100214A26 /* AVFoundation.framework in Frameworks */,
+				2B0F42001972AA6F00214A26 /* CoreGraphics.framework in Frameworks */,
+				2B0F42021972AA6F00214A26 /* UIKit.framework in Frameworks */,
+				2B0F42041972AA6F00214A26 /* SpriteKit.framework in Frameworks */,
+				2B0F41FE1972AA6F00214A26 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B0F421F1972AA6F00214A26 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B0F42241972AA6F00214A26 /* XCTest.framework in Frameworks */,
+				2B0F42261972AA7000214A26 /* UIKit.framework in Frameworks */,
+				2B0F42251972AA7000214A26 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2B0F41F11972AA6F00214A26 = {
+			isa = PBXGroup;
+			children = (
+				2B0F42051972AA6F00214A26 /* FFTCepstrum */,
+				2B0F42291972AA7000214A26 /* FFTCepstrumTests */,
+				2B0F41FC1972AA6F00214A26 /* Frameworks */,
+				2B0F41FB1972AA6F00214A26 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2B0F41FB1972AA6F00214A26 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B0F41FA1972AA6F00214A26 /* FFTCepstrum.app */,
+				2B0F42221972AA6F00214A26 /* FFTCepstrumTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B0F41FC1972AA6F00214A26 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2B105A4A19783314008528CB /* CoreAudio.framework */,
+				2B0F423D1972AAB700214A26 /* AudioToolbox.framework */,
+				2B0F423B1972AAA800214A26 /* Accelerate.framework */,
+				2B0F42391972AAA100214A26 /* AVFoundation.framework */,
+				2B0F41FD1972AA6F00214A26 /* Foundation.framework */,
+				2B0F41FF1972AA6F00214A26 /* CoreGraphics.framework */,
+				2B0F42011972AA6F00214A26 /* UIKit.framework */,
+				2B0F42031972AA6F00214A26 /* SpriteKit.framework */,
+				2B0F42231972AA6F00214A26 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2B0F42051972AA6F00214A26 /* FFTCepstrum */ = {
+			isa = PBXGroup;
+			children = (
+				2B0F424E1972AC6B00214A26 /* AudioUnits */,
+				2B0F424C1972AC0300214A26 /* background.atlas */,
+				2B0F423F1972ABE200214A26 /* PublicUtility */,
+				2B0F420E1972AA6F00214A26 /* AppDelegate.h */,
+				2B0F420F1972AA6F00214A26 /* AppDelegate.m */,
+				2B0F42111972AA6F00214A26 /* Main.storyboard */,
+				2B0F42141972AA6F00214A26 /* ViewController.h */,
+				2B0F42151972AA6F00214A26 /* ViewController.mm */,
+				2B0F42171972AA6F00214A26 /* MyScene.h */,
+				2B0F42181972AA6F00214A26 /* MyScene.mm */,
+				2B0F421C1972AA6F00214A26 /* Images.xcassets */,
+				2B0F42061972AA6F00214A26 /* Supporting Files */,
+			);
+			path = FFTCepstrum;
+			sourceTree = "<group>";
+		};
+		2B0F42061972AA6F00214A26 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2B0F42071972AA6F00214A26 /* FFTCepstrum-Info.plist */,
+				2B0F42081972AA6F00214A26 /* InfoPlist.strings */,
+				2B0F420B1972AA6F00214A26 /* main.m */,
+				2B0F420D1972AA6F00214A26 /* FFTCepstrum-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2B0F42291972AA7000214A26 /* FFTCepstrumTests */ = {
+			isa = PBXGroup;
+			children = (
+				2B0F422F1972AA7000214A26 /* FFTCepstrumTests.m */,
+				2B0F422A1972AA7000214A26 /* Supporting Files */,
+			);
+			path = FFTCepstrumTests;
+			sourceTree = "<group>";
+		};
+		2B0F422A1972AA7000214A26 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2B0F422B1972AA7000214A26 /* FFTCepstrumTests-Info.plist */,
+				2B0F422C1972AA7000214A26 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2B0F423F1972ABE200214A26 /* PublicUtility */ = {
+			isa = PBXGroup;
+			children = (
+				2B0F424B1972ABF700214A26 /* CADebugPrintf.h */,
+				2B0F42401972ABE200214A26 /* CABitOperations.h */,
+				2B0F42411972ABE200214A26 /* CADebugMacros.cpp */,
+				2B0F42421972ABE200214A26 /* CADebugMacros.h */,
+				2B0F42431972ABE200214A26 /* CAMath.h */,
+				2B0F42441972ABE200214A26 /* CAStreamBasicDescription.cpp */,
+				2B0F42451972ABE200214A26 /* CAStreamBasicDescription.h */,
+				2B0F42461972ABE200214A26 /* CAXException.cpp */,
+				2B0F42471972ABE200214A26 /* CAXException.h */,
+			);
+			path = PublicUtility;
+			sourceTree = "<group>";
+		};
+		2B0F424E1972AC6B00214A26 /* AudioUnits */ = {
+			isa = PBXGroup;
+			children = (
+				2B0F424F1972AC8D00214A26 /* AudioController.h */,
+				2B0F42501972AC8D00214A26 /* AudioController.mm */,
+				2B0F42521972AC9D00214A26 /* BufferManager.cpp */,
+				2B0F42531972AC9D00214A26 /* BufferManager.h */,
+				2B0F42541972AC9D00214A26 /* DCRejectionFilter.cpp */,
+				2B0F42551972AC9D00214A26 /* DCRejectionFilter.h */,
+				2B0F42581972ACA900214A26 /* WaveFFTCepstrumHelper.cpp */,
+				2B0F42591972ACA900214A26 /* WaveFFTCepstrumHelper.h */,
+			);
+			name = AudioUnits;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2B0F41F91972AA6F00214A26 /* FFTCepstrum */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B0F42331972AA7000214A26 /* Build configuration list for PBXNativeTarget "FFTCepstrum" */;
+			buildPhases = (
+				2B0F41F61972AA6F00214A26 /* Sources */,
+				2B0F41F71972AA6F00214A26 /* Frameworks */,
+				2B0F41F81972AA6F00214A26 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FFTCepstrum;
+			productName = FFTCepstrum;
+			productReference = 2B0F41FA1972AA6F00214A26 /* FFTCepstrum.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2B0F42211972AA6F00214A26 /* FFTCepstrumTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B0F42361972AA7000214A26 /* Build configuration list for PBXNativeTarget "FFTCepstrumTests" */;
+			buildPhases = (
+				2B0F421E1972AA6F00214A26 /* Sources */,
+				2B0F421F1972AA6F00214A26 /* Frameworks */,
+				2B0F42201972AA6F00214A26 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2B0F42281972AA7000214A26 /* PBXTargetDependency */,
+			);
+			name = FFTCepstrumTests;
+			productName = FFTCepstrumTests;
+			productReference = 2B0F42221972AA6F00214A26 /* FFTCepstrumTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B0F41F21972AA6F00214A26 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = Edward;
+				TargetAttributes = {
+					2B0F42211972AA6F00214A26 = {
+						TestTargetID = 2B0F41F91972AA6F00214A26;
+					};
+				};
+			};
+			buildConfigurationList = 2B0F41F51972AA6F00214A26 /* Build configuration list for PBXProject "FFTCepstrum" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2B0F41F11972AA6F00214A26;
+			productRefGroup = 2B0F41FB1972AA6F00214A26 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2B0F41F91972AA6F00214A26 /* FFTCepstrum */,
+				2B0F42211972AA6F00214A26 /* FFTCepstrumTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2B0F41F81972AA6F00214A26 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B0F420A1972AA6F00214A26 /* InfoPlist.strings in Resources */,
+				2B0F421D1972AA6F00214A26 /* Images.xcassets in Resources */,
+				2B0F424D1972AC0300214A26 /* background.atlas in Resources */,
+				2B0F42131972AA6F00214A26 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B0F42201972AA6F00214A26 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B0F422E1972AA7000214A26 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B0F41F61972AA6F00214A26 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B0F42571972AC9D00214A26 /* DCRejectionFilter.cpp in Sources */,
+				2B0F42561972AC9D00214A26 /* BufferManager.cpp in Sources */,
+				2B0F42511972AC8D00214A26 /* AudioController.mm in Sources */,
+				2B0F42191972AA6F00214A26 /* MyScene.mm in Sources */,
+				2B0F42161972AA6F00214A26 /* ViewController.mm in Sources */,
+				2B0F425A1972ACA900214A26 /* WaveFFTCepstrumHelper.cpp in Sources */,
+				2B0F42101972AA6F00214A26 /* AppDelegate.m in Sources */,
+				2B0F42481972ABE200214A26 /* CADebugMacros.cpp in Sources */,
+				2B0F420C1972AA6F00214A26 /* main.m in Sources */,
+				2B0F424A1972ABE200214A26 /* CAXException.cpp in Sources */,
+				2B0F42491972ABE200214A26 /* CAStreamBasicDescription.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B0F421E1972AA6F00214A26 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B0F42301972AA7000214A26 /* FFTCepstrumTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2B0F42281972AA7000214A26 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2B0F41F91972AA6F00214A26 /* FFTCepstrum */;
+			targetProxy = 2B0F42271972AA7000214A26 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		2B0F42081972AA6F00214A26 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B0F42091972AA6F00214A26 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		2B0F42111972AA6F00214A26 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B0F42121972AA6F00214A26 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		2B0F422C1972AA7000214A26 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B0F422D1972AA7000214A26 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2B0F42311972AA7000214A26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		2B0F42321972AA7000214A26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2B0F42341972AA7000214A26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FFTCepstrum/FFTCepstrum-Prefix.pch";
+				INFOPLIST_FILE = "FFTCepstrum/FFTCepstrum-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		2B0F42351972AA7000214A26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FFTCepstrum/FFTCepstrum-Prefix.pch";
+				INFOPLIST_FILE = "FFTCepstrum/FFTCepstrum-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		2B0F42371972AA7000214A26 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FFTCepstrum.app/FFTCepstrum";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FFTCepstrum/FFTCepstrum-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "FFTCepstrumTests/FFTCepstrumTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		2B0F42381972AA7000214A26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FFTCepstrum.app/FFTCepstrum";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "FFTCepstrum/FFTCepstrum-Prefix.pch";
+				INFOPLIST_FILE = "FFTCepstrumTests/FFTCepstrumTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B0F41F51972AA6F00214A26 /* Build configuration list for PBXProject "FFTCepstrum" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B0F42311972AA7000214A26 /* Debug */,
+				2B0F42321972AA7000214A26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B0F42331972AA7000214A26 /* Build configuration list for PBXNativeTarget "FFTCepstrum" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B0F42341972AA7000214A26 /* Debug */,
+				2B0F42351972AA7000214A26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B0F42361972AA7000214A26 /* Build configuration list for PBXNativeTarget "FFTCepstrumTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B0F42371972AA7000214A26 /* Debug */,
+				2B0F42381972AA7000214A26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2B0F41F21972AA6F00214A26 /* Project object */;
+}
