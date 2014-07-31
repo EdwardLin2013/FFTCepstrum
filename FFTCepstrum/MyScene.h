@@ -31,19 +31,8 @@
 
     SKShapeNode*        _fftLine;
     SKShapeNode*        _cepstrumLine;
-    SKShapeNode*        _fftcepstrumLine;
-    
-    UInt32              _Hz1200;
-    UInt32              _Hz30;
-    UInt32              _Hz70;
-    UInt32              _Hz95;
-    UInt32              _Hz100;
-    UInt32              _Hz120;
-    UInt32              _Hz530;
-    UInt32              _Hz1000;
-    UInt32              _lowestPitchThreshold;
-    UInt32              _highestPitchThreshold;
-    
+    SKShapeNode*        _fftlogcepstrumLine;
+        
     Float32             _maxAmp;
     int                 _bin;
     UInt32              _sampleRate;
@@ -53,14 +42,11 @@
     Float32             _Interval;
     Float32             _X;
     Float32             _Y;
+    Float32             _Hz1200;
     
     Float32             _frequency;
     Float32             _midiNum;
     NSString*           _pitch;
-    
-    Float32             _aveFreq;
-    Float32             _currentTotalFreq;
-    int                 _currentNum;
 }
 
 @end

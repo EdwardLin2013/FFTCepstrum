@@ -1,9 +1,9 @@
 //
 //  BufferManager.cpp
-//  SingingPitchCoach
+//  TheSingingCoach
 //
-//  Created by Edward on 22/7/14.
-//  Copyright (c) 2014 Edward. All rights reserved.
+//  Created by Edward and Natalie on 22/7/14.
+//  Copyright (c) 2014 Edward and Natalie. All rights reserved.
 //
 #include "BufferManager.h"
 
@@ -19,6 +19,7 @@ BufferManager::BufferManager( UInt32  NewFramesSize, UInt32  NewSamplingRate, Fl
     _FFTEndIdx = NewFramesSize-1;
     _Overlap = NewOverlap;
     _AudioDataBuffer = (Float32*) calloc(_BufferLen, sizeof(Float32));
+    memset(_AudioDataBuffer, 0, _BufferLen*sizeof(Float32));
     _WaveFFTCepstrumHelper = new WaveFFTCepstrumHelper(_FrameSize);
     
     _HasNewFFTData = 0;
@@ -27,8 +28,8 @@ BufferManager::BufferManager( UInt32  NewFramesSize, UInt32  NewSamplingRate, Fl
 }
 BufferManager::~BufferManager()
 {
-    _AudioDataBuffer = NULL;
     free(_AudioDataBuffer);
+    _AudioDataBuffer = NULL;
     
     delete _WaveFFTCepstrumHelper;
     _WaveFFTCepstrumHelper = NULL;
@@ -137,7 +138,7 @@ void BufferManager::GetCepstrumOutput ( Float32* inFFTData, Float32* outCepstrum
     _WaveFFTCepstrumHelper->ComputeCepstrum(inFFTData, outCepstrumData);
 }
 
-void BufferManager::GetFFTCepstrumOutput ( Float32* inFFTData, Float32* inCepstrumData, Float32* inFFTCepstrumData )
+void BufferManager::GetFFTLogCepstrumOutput ( Float32* inFFTData, Float32* inCepstrumData, Float32* inFFTCepstrumData )
 {
-    _WaveFFTCepstrumHelper->ComputeFFTCepstrum(inFFTData, inCepstrumData, inFFTCepstrumData);
+    _WaveFFTCepstrumHelper->ComputeFFTLogCepstrum(inFFTData, inCepstrumData, inFFTCepstrumData);
 }

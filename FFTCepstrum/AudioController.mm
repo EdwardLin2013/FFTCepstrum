@@ -1,9 +1,9 @@
 //
 //  AudioController.mm
-//  SingingPitchCoach
+//  TheSingingCoach
 //
-//  Created by Edward on 22/7/14.
-//  Copyright (c) 2014 Edward. All rights reserved.
+//  Created by Edward and Natalie on 22/7/14.
+//  Copyright (c) 2014 Edward and Natalie. All rights reserved.
 //
 #import "AudioController.h"
 
@@ -13,10 +13,10 @@ struct CallbackData {
     DCRejectionFilter*                    dcRejectionFilter;
     BOOL*                                 muteAudio;
     BOOL*                                 audioChainIsBeingReconstructed;
-    AudioFileID                           WaveFile;
-    AudioFileID                           FFTFile;
-    SInt64                                currentFramesWave;
-    SInt64                                currentFramesFFT;
+    AudioFileID                           OriginalFile;
+    AudioFileID                           FramesFile;
+    SInt64                                currentIdxOriginal;
+    SInt64                                currentIdxFrames;
     BOOL*                                 isRecording;
     
     CallbackData(): rioUnit(NULL), bufferManager(NULL), muteAudio(NULL), audioChainIsBeingReconstructed(NULL) {}
@@ -43,29 +43,17 @@ static OSStatus	performRender (void                         *inRefCon,
         // fill up the audioDataBuffer
         cd.bufferManager->CopyAudioDataToBuffer((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
         
-        /*
-         // fill up the buffer for Audio Wave
-         cd.bufferManager->CopyAudioDataToWaveBuffer((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
-         
-         // fill up the buffer for FFT
-         if (cd.bufferManager->NeedsNewFFTData())
-         {
-         //cd.bufferManager->CopyAudioDataToFFTInputBuffer((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
-         cd.bufferManager->CopyAudioDataToFFTInputBufferVer2((Float32*)ioData->mBuffers[0].mData, inNumberFrames);
-         }
-         
-         // Do the recording if needed
-         if (cd.isRecording)
-         {
-         if (inNumberFrames > 0)
-         {
-         // write packets to file
-         err = AudioFileWritePackets(cd.WaveFile, FALSE, inNumberFrames, NULL, cd.currentFramesWave, &inNumberFrames, ioData->mBuffers[0].mData);
-         cd.currentFramesWave += inNumberFrames;
-         //NSLog(@"cd.currentFramesWave: %lld", cd.currentFramesWave);
-         }
-         }
-         */
+        // Do the recording if needed
+        if (cd.isRecording)
+        {
+            if (inNumberFrames > 0)
+            {
+                // write packets to file
+                err = AudioFileWritePackets(cd.OriginalFile, FALSE, inNumberFrames, NULL, cd.currentIdxOriginal, &inNumberFrames, ioData->mBuffers[0].mData);
+                cd.currentIdxOriginal += inNumberFrames;
+                //NSLog(@"cd.currentIdxOriginal: %lld", cd.currentIdxOriginal);
+            }
+        }
         
         // mute audio if needed....mute the echo?
         for (UInt32 i=0; i<ioData->mNumberBuffers; ++i)
@@ -100,15 +88,40 @@ static OSStatus	performRender (void                         *inRefCon,
         _Hz1100 = floor(1100*(float)_framesSize/(float)_sampleRate);
         
         _isRecording = NO;
-        _FileNameWave = @"audioWave.wav";
-        _FileNameFFT = @"audioFFT.wav";
+        _FileNameOriginal = @"audioOriginal.wav";
+        _FileNameFrames = @"audioFrames.wav";
         
+        _fftData = (Float32*) calloc(_framesSize, sizeof(Float32));
+        _cepstrumData = (Float32*) calloc(_framesSize, sizeof(Float32));
+        _fftlogcepstrumData = (Float32*) calloc(_framesSize, sizeof(Float32));
+        
+        // Only connect to microphone
         [self setupAudioChain];
+        
+        NSError *error;
+        _fileMgr = [NSFileManager defaultManager];
+        
+        NSArray *dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+        _docsDir =dirPaths[0];
+        _tmpDir = NSTemporaryDirectory();
+        NSLog(@"tmpDir:%@ directory content:%@",_tmpDir, [_fileMgr contentsOfDirectoryAtPath:_tmpDir error:&error]);
+        NSLog(@"documentDir:%@ directory content:%@",_docsDir, [_fileMgr contentsOfDirectoryAtPath:_docsDir error:&error]);
     }
     return self;
 }
 - (OSStatus)startIOUnit
 {
+    _bufferManager = new BufferManager(_framesSize, _sampleRate, _Overlap);
+    _dcRejectionFilter = new DCRejectionFilter;
+    
+    // We need references to certain data in the render callback
+    // This simple struct is used to hold that information
+    
+    cd.rioUnit = _rioUnit;
+    cd.bufferManager = _bufferManager;
+    cd.dcRejectionFilter = _dcRejectionFilter;
+    cd.audioChainIsBeingReconstructed = &_audioChainIsBeingReconstructed;
+    
     OSStatus err = AudioOutputUnitStart(_rioUnit);
     if (err) NSLog(@"couldn't start AURemoteIO: %d", (int)err);
     
@@ -120,17 +133,27 @@ static OSStatus	performRender (void                         *inRefCon,
                                                               selector:@selector(EstimatePitch)
                                                               userInfo:nil
                                                                repeats:YES];
-
+    
     return err;
 }
 - (OSStatus)stopIOUnit
 {
+    // Stop the Pitch Estimation
+    if (_pitchEstimatedScheduler != NULL)
+    {
+        [_pitchEstimatedScheduler invalidate];
+        _pitchEstimatedScheduler = NULL;
+    }
+    
     OSStatus err = AudioOutputUnitStop(_rioUnit);
     if (err) NSLog(@"couldn't stop AURemoteIO: %d", (int)err);
     
-    // Stop the Pitch Estimation
-    [_pitchEstimatedScheduler invalidate];
-    _pitchEstimatedScheduler = NULL;
+    delete _bufferManager;      _bufferManager = NULL;
+    delete _dcRejectionFilter;  _dcRejectionFilter = NULL;
+    
+    free(_fftData);             _fftData = NULL;
+    free(_cepstrumData);        _cepstrumData = NULL;
+    free(_fftlogcepstrumData);  _fftlogcepstrumData = NULL;
     
     return err;
 }
@@ -140,23 +163,20 @@ static OSStatus	performRender (void                         *inRefCon,
     {
         if(_bufferManager->HasNewFFTData())
         {
-            Float32 fftData[_framesSize];
-            Float32 cepstrumData[_framesSize];
-            Float32 fftcepstrumData[_framesSize];
-            Float32 _curAmp;
+            Float32 curAmp;
             
-            [self GetFFTOutput:fftData];
-            _bufferManager->GetCepstrumOutput(fftData, cepstrumData);
-            _bufferManager->GetFFTCepstrumOutput(fftData, cepstrumData, fftcepstrumData);
+            [self GetFFTOutput:_fftData];
+            _bufferManager->GetCepstrumOutput(_fftData, _cepstrumData);
+            _bufferManager->GetFFTLogCepstrumOutput(_fftData, _cepstrumData, _fftlogcepstrumData);
             
             Float32 _maxAmp = -INFINITY;
-            int _bin = _Hz120;
+            _bin = _Hz120;
             for (int i=_Hz120; i<=_Hz1100; i++)
             {
-                _curAmp = fftcepstrumData[i];
-                if (_curAmp > _maxAmp)
+                curAmp = _fftlogcepstrumData[i];
+                if (curAmp > _maxAmp)
                 {
-                    _maxAmp = _curAmp;
+                    _maxAmp = curAmp;
                     _bin = i;
                 }
             }
@@ -179,6 +199,63 @@ static OSStatus	performRender (void                         *inRefCon,
 - (NSString*)CurrentPitch
 {
     return _pitch;
+}
+- (int)CurrentBin
+{
+    return _bin;
+}
+
+- (Float32*)CurrentwaveData
+{
+    Float32* retval = (Float32*) calloc(_framesSize, sizeof(Float32));
+    Float32* audiodata = _bufferManager->GetAudioDataBuffers();
+    UInt32 BufferLen = _bufferManager->GetBufferLen();
+    int lastIdx = (_bufferManager->GetCurDataIdx() == 0)? BufferLen : _bufferManager->GetCurDataIdx() - 1;
+    
+    int i, j;
+    int startIdx = lastIdx - _framesSize + 1;
+    if (startIdx >= 0)
+    {
+        for (i=lastIdx, j=_framesSize-1; i>=startIdx; i--, j--)
+            retval[j] = audiodata[i];
+    }
+    else
+    {
+        startIdx = BufferLen + startIdx;
+        for (i=startIdx, j=0; i<BufferLen; i++, j++)
+            retval[j] = audiodata[i];
+        for (i=0, j=0; i<=lastIdx; i++, j++)
+            retval[j] = audiodata[i];
+    }
+    
+    return retval;
+}
+
+- (Float32*)CurrentfftData
+{
+    return _fftData;
+}
+- (Float32*)CurrentcepstrumData
+{
+    return _cepstrumData;
+}
+- (Float32*)CurrentfftlogcepstrumData
+{
+    return _fftlogcepstrumData;
+}
+
+- (UInt32)getFrameSize
+{
+    return _framesSize;
+}
+
+- (double)sessionSampleRate
+{
+    return [[AVAudioSession sharedInstance] sampleRate];
+}
+- (BOOL)audioChainIsBeingReconstructed
+{
+    return _audioChainIsBeingReconstructed;
 }
 /* -----------------------------Public Methods--------------------------------- End */
 
@@ -276,17 +353,6 @@ static OSStatus	performRender (void                         *inRefCon,
         // Get the property value back from AURemoteIO. We are going to use this value to allocate buffers accordingly
         UInt32 propSize = sizeof(UInt32);
         XThrowIfError(AudioUnitGetProperty(_rioUnit, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &_framesSize, &propSize), "couldn't get max frames per slice on AURemoteIO");
-        
-        _bufferManager = new BufferManager(_framesSize, _sampleRate, _Overlap);
-        _dcRejectionFilter = new DCRejectionFilter;
-        
-        // We need references to certain data in the render callback
-        // This simple struct is used to hold that information
-        
-        cd.rioUnit = _rioUnit;
-        cd.bufferManager = _bufferManager;
-        cd.dcRejectionFilter = _dcRejectionFilter;
-        cd.audioChainIsBeingReconstructed = &_audioChainIsBeingReconstructed;
         
         // Set the render callback on AURemoteIO
         AURenderCallbackStruct renderCallback;
@@ -387,45 +453,29 @@ static OSStatus	performRender (void                         *inRefCon,
     _audioChainIsBeingReconstructed = NO;
 }
 
-- (BufferManager*)getBufferManagerInstance
-{
-    return _bufferManager;
-}
-- (UInt32)getFrameSize
-{
-    return _framesSize;
-}
-- (double)sessionSampleRate
-{
-    return [[AVAudioSession sharedInstance] sampleRate];
-}
-- (BOOL)audioChainIsBeingReconstructed
-{
-    return _audioChainIsBeingReconstructed;
-}
 
 - (void)startRecording
 {
     if(!_isRecording)
     {
         // create the audio file
-        NSString *filePathWave = [NSHomeDirectory() stringByAppendingPathComponent: _FileNameWave];
-        NSString *filePathFFT = [NSHomeDirectory() stringByAppendingPathComponent: _FileNameFFT];
+        NSString *filePathOriginal = [NSTemporaryDirectory() stringByAppendingPathComponent: _FileNameOriginal];
+        NSString *filePathFrames = [NSTemporaryDirectory() stringByAppendingPathComponent: _FileNameFrames];
         
-        CFURLRef urlWave = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)filePathWave, kCFURLPOSIXPathStyle, false);
-        CFURLRef urlFFT = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)filePathFFT, kCFURLPOSIXPathStyle, false);
+        CFURLRef urlOriginal = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)filePathOriginal, kCFURLPOSIXPathStyle, false);
+        CFURLRef urlFrames = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)filePathFrames, kCFURLPOSIXPathStyle, false);
         NSLog(@"Start Recording");
-        NSLog(@"Wave at: %@", urlWave);
-        NSLog(@"FFT at: %@", urlFFT);
-        XThrowIfError(AudioFileCreateWithURL(urlWave, kAudioFileWAVEType, &_ioFormat, kAudioFileFlags_EraseFile, &_WaveFile), "AudioFileCreateWithURL failed");
-        XThrowIfError(AudioFileCreateWithURL(urlFFT, kAudioFileWAVEType, &_ioFormat, kAudioFileFlags_EraseFile, &_FFTFile), "AudioFileCreateWithURL failed");
-        CFRelease(urlWave);
-        CFRelease(urlFFT);
+        NSLog(@"Original at: %@", urlOriginal);
+        NSLog(@"Frames at: %@", urlFrames);
+        XThrowIfError(AudioFileCreateWithURL(urlOriginal, kAudioFileWAVEType, &_ioFormat, kAudioFileFlags_EraseFile, &_OriginalFile), "Original: AudioFileCreateWithURL failed");
+        XThrowIfError(AudioFileCreateWithURL(urlFrames, kAudioFileWAVEType, &_ioFormat, kAudioFileFlags_EraseFile, &_FramesFile), "Frames: AudioFileCreateWithURL failed");
+        CFRelease(urlOriginal);
+        CFRelease(urlFrames);
         
-        cd.WaveFile = _WaveFile;
-        cd.FFTFile = _FFTFile;
-        cd.currentFramesWave = 0;
-        cd.currentFramesFFT = 0;
+        cd.OriginalFile = _OriginalFile;
+        cd.FramesFile = _FramesFile;
+        cd.currentIdxOriginal = 0;
+        cd.currentIdxFrames = 0;
         _isRecording = YES;
         cd.isRecording = &_isRecording;
     }
@@ -449,18 +499,20 @@ static OSStatus	performRender (void                         *inRefCon,
     // Do the recording if needed
     if (_isRecording==YES && _bufferManager->HasNewFFTData())
     {
-        const void* fftData = _bufferManager->GetFFTBuffers();
+        Float32* fftData = _bufferManager->GetFFTBuffers();
         
         // write packets to file
         UInt32 inNumberFrames = _framesSize;
-        XThrowIfError(AudioFileWritePackets(cd.FFTFile, FALSE, _framesSize, NULL, cd.currentFramesFFT, &inNumberFrames, fftData), "Cannot write data to FFTfile?");
-        cd.currentFramesFFT += inNumberFrames;
-        //NSLog(@"cd.currentFramesFFT: %lld", cd.currentFramesFFT);
+        XThrowIfError(AudioFileWritePackets(cd.FramesFile, FALSE, _framesSize, NULL, cd.currentIdxFrames, &inNumberFrames, fftData), "Cannot write data to FFTfile?");
+        cd.currentIdxFrames += inNumberFrames;
+        //NSLog(@"cd.currentIdxFrames: %lld", cd.currentIdxFrames);
+        
+        free(fftData); fftData = NULL;
     }
-    else if(_isRecording==NO && cd.currentFramesFFT>0)
+    else if(_isRecording==NO && cd.currentIdxFrames>0)
     {
-        AudioFileClose(_WaveFile);
-        AudioFileClose(_FFTFile);
+        AudioFileClose(_OriginalFile);
+        AudioFileClose(_FramesFile);
     }
     
     _bufferManager->GetFFTOutput(outFFTData);
@@ -502,6 +554,72 @@ static OSStatus	performRender (void                         *inRefCon,
         retval = [retval stringByAppendingString:@"8"];
     
     return retval;
+}
+
+- (void)removeTmpFiles
+{
+    NSError *error;
+    NSFileManager *fileMgr = [NSFileManager defaultManager];
+    NSString *tmpDir = NSTemporaryDirectory();
+    NSString *tmpOriginalFile = [tmpDir stringByAppendingString:@"audioOriginal.wav"];
+    NSString *tmpFramesFile = [tmpDir stringByAppendingString:@"audioFrames.wav"];
+    
+    if([fileMgr removeItemAtPath:tmpOriginalFile error:&error])
+        NSLog(@"Yes, files are removed: %@", tmpOriginalFile);
+    else
+    {
+        NSLog(@"No, files are removed: %@", tmpOriginalFile);
+        NSLog(@"No, error is %@", error);
+    }
+    if([fileMgr removeItemAtPath:tmpFramesFile error:&error])
+        NSLog(@"Yes, files are removed %@", tmpFramesFile);
+    else
+    {
+        NSLog(@"No, files are removed: %@", tmpFramesFile);
+        NSLog(@"No, error is %@", error);
+    }
+}
+
+// Move the audio files from tmp directory to Document directory
+- (void)saveRecording:(NSString *)SongName
+{
+    NSError* error;
+    
+    NSString *tmpOriginalFile = [_tmpDir stringByAppendingString:@"audioOriginal.wav"];
+    NSString *tmpFramesFile = [_tmpDir stringByAppendingString:@"audioFrames.wav"];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyyMMdd_HHmm"];
+    NSString *strNow = [dateFormatter stringFromDate:[NSDate date]];
+    
+    NSString *OriginalDocFileName = SongName;
+    OriginalDocFileName = [OriginalDocFileName stringByAppendingString:@"_Original_"];
+    OriginalDocFileName = [OriginalDocFileName stringByAppendingString:strNow];
+    OriginalDocFileName = [OriginalDocFileName stringByAppendingString:@".wav"];
+    NSString *FramesDocFileName = SongName;
+    FramesDocFileName = [FramesDocFileName stringByAppendingString:@"_Frames_"];
+    FramesDocFileName = [FramesDocFileName stringByAppendingString:strNow];
+    FramesDocFileName = [FramesDocFileName stringByAppendingString:@".wav"];
+    
+    NSString *docOriginalFile = [_docsDir stringByAppendingString:@"/"];
+    docOriginalFile = [docOriginalFile stringByAppendingString:OriginalDocFileName];
+    NSString *docFramesFile = [_docsDir stringByAppendingString:@"/"];
+    docFramesFile = [docFramesFile stringByAppendingString:FramesDocFileName];
+    
+    if([_fileMgr moveItemAtPath:tmpOriginalFile toPath:docOriginalFile error:&error])
+        NSLog(@"Yes, files are moved to %@", docOriginalFile);
+    else
+    {
+        NSLog(@"No, files are not moved to %@", docOriginalFile);
+        NSLog(@"No, error is %@", error);
+    }
+    if([_fileMgr moveItemAtPath:tmpFramesFile toPath:docFramesFile error:&error])
+        NSLog(@"Yes, files are moved to %@", docFramesFile);
+    else
+    {
+        NSLog(@"No, files are not moved to %@", docFramesFile);
+        NSLog(@"No, error is %@", error);
+    }
 }
 /* -----------------------------Private Methods--------------------------------- Begin */
 

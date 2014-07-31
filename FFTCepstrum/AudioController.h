@@ -1,9 +1,9 @@
 //
 //  AudioController.h
-//  SingingPitchCoach
+//  TheSingingCoach
 //
-//  Created by Edward on 22/7/14.
-//  Copyright (c) 2014 Edward. All rights reserved.
+//  Created by Edward and Natalie on 22/7/14.
+//  Copyright (c) 2014 Edward and Natalie. All rights reserved.
 //
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
@@ -29,6 +29,7 @@
     Float32                     _frequency;
     Float32                     _midiNum;
     NSString*                   _pitch;
+    int                         _bin;
     
     NSTimer*                    _pitchEstimatedScheduler;
     
@@ -36,12 +37,21 @@
     UInt32                      _Hz530;      // C5
     UInt32                      _Hz1100;     // C6
     
-    NSString*                   _FileNameWave;
-    NSString*                   _FileNameFFT;
-    AudioFileID                 _WaveFile;
-    AudioFileID                 _FFTFile;
+    NSString*                   _FileNameOriginal;      // Record the original Audio Wave
+    NSString*                   _FileNameFrames;        // Record the fragmentation
+    AudioFileID                 _OriginalFile;
+    AudioFileID                 _FramesFile;
     BOOL                        _isRecording;   //FIXME: semaphore?
     CAStreamBasicDescription    _ioFormat;
+
+    Float32*                     _waveData;
+    Float32*                     _fftData;
+    Float32*                     _cepstrumData;
+    Float32*                     _fftlogcepstrumData;
+    
+    NSFileManager*              _fileMgr;
+    NSString*                   _docsDir;
+    NSString*                   _tmpDir;
 }
 
 /* -----------------------------Public Methods--------------------------------- Begin */
@@ -49,9 +59,20 @@
 - (OSStatus)startIOUnit;
 - (OSStatus)stopIOUnit;
 - (void)EstimatePitch;
+
 - (Float32)CurrentFreq;
 - (Float32)CurrentMIDI;
 - (NSString*)CurrentPitch;
+- (int)CurrentBin;
+
+- (Float32*)CurrentwaveData;                // Caller has to free the memory
+- (Float32*)CurrentfftData;
+- (Float32*)CurrentcepstrumData;
+- (Float32*)CurrentfftlogcepstrumData;
+
+- (UInt32)getFrameSize;
+- (double)sessionSampleRate;
+- (BOOL)audioChainIsBeingReconstructed;
 /* -----------------------------Public Methods--------------------------------- End */
 
 /* -----------------------------Private Methods--------------------------------- Begin */
@@ -66,16 +87,15 @@
 - (Float32)freqToMIDI:(Float32)frequency;
 - (NSString*)midiToPitch:(Float32)midiNote;
 
-// Obsolete Functions or Functions which need improvement
-- (BufferManager*)getBufferManagerInstance;
-- (UInt32)getFrameSize;
-- (double)sessionSampleRate;
-- (BOOL)audioChainIsBeingReconstructed;
-
+// Audio Recording
 - (void)startRecording;
 - (void)stopRecording;
 - (BOOL)isRecording;
 - (void)GetFFTOutput:(Float32*)outFFTData;
-/* -----------------------------Private Methods--------------------------------- Begin */
+
+// File Management
+- (void)removeTmpFiles;
+- (void)saveRecording:(NSString *)SongName;
+/* -----------------------------Private Methods--------------------------------- End */
 
 @end
