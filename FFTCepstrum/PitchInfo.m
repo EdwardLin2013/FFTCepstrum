@@ -15,7 +15,7 @@
 @synthesize _frequency;
 @synthesize _midiNum;
 @synthesize _pitch;
-@synthesize _stablePitch;
+@synthesize _pitchAboveNoise;
 
 -(id)init
 {
@@ -32,7 +32,7 @@
     _frequency = 0;
     _midiNum = 0;
     _pitch = @"nil";
-    _stablePitch = @"nil";
+    _pitchAboveNoise = @"nil";
 }
 
 + (Float32)freqToMIDI:(Float32)frequency

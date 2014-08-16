@@ -78,13 +78,6 @@ static OSStatus	performRender (void                         *inRefCon,
         _Overlap = NewOverlap;
         
         _curPitchInfo = [[PitchInfo alloc] init];
-        
-        /*
-        _frequency = 0;
-        _midiNum = 0;
-        _pitch = @"nil";
-        */
-        
         _pitchEstimatedScheduler = NULL;
         
         _Hz120 = floor(120*(float)_framesSize/(float)_sampleRate);
@@ -189,8 +182,9 @@ static OSStatus	performRender (void                         *inRefCon,
             _curPitchInfo._midiNum = [PitchInfo freqToMIDI:_curPitchInfo._frequency];
             _curPitchInfo._pitch = [PitchInfo midiToPitch:_curPitchInfo._midiNum];
             
+            // Only Audio which excess certain amplitude is considered as voice
             if (_curPitchInfo._maxAmp > 100)
-                _curPitchInfo._stablePitch = _curPitchInfo._pitch;
+                _curPitchInfo._pitchAboveNoise = _curPitchInfo._pitch;
             
             //NSLog(@"Current: %.12f %d %.12f %@", _frequency, _bin, _midiNum, _pitch);
         }
@@ -218,7 +212,7 @@ static OSStatus	performRender (void                         *inRefCon,
 }
 - (NSString*)CurrentStablePitch
 {
-    return _curPitchInfo._stablePitch;
+    return _curPitchInfo._pitchAboveNoise;
 }
 
 - (Float32*)CurrentwaveData
@@ -532,44 +526,6 @@ static OSStatus	performRender (void                         *inRefCon,
     }
     
     _bufferManager->GetFFTOutput(outFFTData);
-}
-
-- (Float32)freqToMIDI:(Float32)frequency
-{
-    if (frequency <=0)
-        return -1;
-    else
-        return 12*log2f(frequency/440) + 69;
-}
-- (NSString*)midiToPitch:(Float32)midiNote
-{
-    if (midiNote<=-1)
-        return @"NIL";
-    
-    int midi = (int)round((double)midiNote);
-    NSArray *noteStrings = [[NSArray alloc] initWithObjects:@"C", @"C#", @"D", @"D#", @"E", @"F", @"F#", @"G", @"G#", @"A", @"A#", @"B", nil];
-    NSString *retval = [noteStrings objectAtIndex:midi%12];
-    
-    if(midi <= 23)
-        retval = [retval stringByAppendingString:@"0"];
-    else if(midi <= 35)
-        retval = [retval stringByAppendingString:@"1"];
-    else if(midi <= 47)
-        retval = [retval stringByAppendingString:@"2"];
-    else if(midi <= 59)
-        retval = [retval stringByAppendingString:@"3"];
-    else if(midi <= 71)
-        retval = [retval stringByAppendingString:@"4"];
-    else if(midi <= 83)
-        retval = [retval stringByAppendingString:@"5"];
-    else if(midi <= 95)
-        retval = [retval stringByAppendingString:@"6"];
-    else if(midi <= 107)
-        retval = [retval stringByAppendingString:@"7"];
-    else
-        retval = [retval stringByAppendingString:@"8"];
-    
-    return retval;
 }
 
 - (void)removeTmpFiles

@@ -83,9 +83,6 @@
 - (void)handleRouteChange:(NSNotification *)notification;
 - (void)handleMediaServerReset:(NSNotification *)notification;
 
-- (Float32)freqToMIDI:(Float32)frequency;
-- (NSString*)midiToPitch:(Float32)midiNote;
-
 // Audio Recording
 - (void)startRecording;
 - (void)stopRecording;

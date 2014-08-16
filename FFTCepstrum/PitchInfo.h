@@ -15,7 +15,7 @@
 @property Float32 _frequency;
 @property Float32 _midiNum;
 @property NSString* _pitch;
-@property NSString* _stablePitch;
+@property NSString* _pitchAboveNoise;
 
 -(id)init;
 -(void)resetParameters;
