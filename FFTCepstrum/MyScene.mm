@@ -174,7 +174,7 @@
     _fftlogcepstrumLine.path = path;
     CGPathRelease(path);
     
-    NSLog(@"SpriteKit Update(): %.12f %d %.12f %@", [_audioController CurrentFreq], [_audioController CurrentBin], [_audioController CurrentMIDI], [_audioController CurrentPitch]);
+    NSLog(@"SpriteKit Update(): %.12f %d %.12f %@ %.12f %@", [_audioController CurrentFreq], [_audioController CurrentBin], [_audioController CurrentMIDI], [_audioController CurrentPitch], [_audioController CurrentAmp], [_audioController CurrentStablePitch]);
 }
 
 @end

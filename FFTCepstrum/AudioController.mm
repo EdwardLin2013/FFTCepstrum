@@ -77,9 +77,13 @@ static OSStatus	performRender (void                         *inRefCon,
         _framesSize = NewFrameSize;
         _Overlap = NewOverlap;
         
+        _curPitchInfo = [[PitchInfo alloc] init];
+        
+        /*
         _frequency = 0;
         _midiNum = 0;
         _pitch = @"nil";
+        */
         
         _pitchEstimatedScheduler = NULL;
         
@@ -169,40 +173,52 @@ static OSStatus	performRender (void                         *inRefCon,
             _bufferManager->GetCepstrumOutput(_fftData, _cepstrumData);
             _bufferManager->GetFFTLogCepstrumOutput(_fftData, _cepstrumData, _fftlogcepstrumData);
             
-            Float32 _maxAmp = -INFINITY;
-            _bin = _Hz120;
+            [_curPitchInfo resetParameters];
+            _curPitchInfo._bin = _Hz120;
             for (int i=_Hz120; i<=_Hz1100; i++)
             {
                 curAmp = _fftlogcepstrumData[i];
-                if (curAmp > _maxAmp)
+                if (curAmp > _curPitchInfo._maxAmp)
                 {
-                    _maxAmp = curAmp;
-                    _bin = i;
+                    _curPitchInfo._maxAmp = curAmp;
+                    _curPitchInfo._bin = i;
                 }
             }
             
-            _frequency = _bin*((float)_sampleRate/(float)_framesSize);
-            _midiNum = [self freqToMIDI:_frequency];
-            _pitch = [self midiToPitch:_midiNum];
+            _curPitchInfo._frequency = _curPitchInfo._bin*((float)_sampleRate/(float)_framesSize);
+            _curPitchInfo._midiNum = [PitchInfo freqToMIDI:_curPitchInfo._frequency];
+            _curPitchInfo._pitch = [PitchInfo midiToPitch:_curPitchInfo._midiNum];
+            
+            if (_curPitchInfo._maxAmp > 100)
+                _curPitchInfo._stablePitch = _curPitchInfo._pitch;
+            
             //NSLog(@"Current: %.12f %d %.12f %@", _frequency, _bin, _midiNum, _pitch);
         }
     }
 }
 - (Float32)CurrentFreq
 {
-    return _frequency;
+    return _curPitchInfo._frequency;
 }
 - (Float32)CurrentMIDI
 {
-    return _midiNum;
+    return _curPitchInfo._midiNum;
 }
 - (NSString*)CurrentPitch
 {
-    return _pitch;
+    return _curPitchInfo._pitch;
 }
 - (int)CurrentBin
 {
-    return _bin;
+    return _curPitchInfo._bin;
+}
+- (Float32)CurrentAmp
+{
+    return _curPitchInfo._maxAmp;
+}
+- (NSString*)CurrentStablePitch
+{
+    return _curPitchInfo._stablePitch;
 }
 
 - (Float32*)CurrentwaveData

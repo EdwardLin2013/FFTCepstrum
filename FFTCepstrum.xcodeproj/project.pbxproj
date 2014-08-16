@@ -35,6 +35,7 @@
 		2B0F42571972AC9D00214A26 /* DCRejectionFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42541972AC9D00214A26 /* DCRejectionFilter.cpp */; };
 		2B0F425A1972ACA900214A26 /* WaveFFTCepstrumHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2B0F42581972ACA900214A26 /* WaveFFTCepstrumHelper.cpp */; };
 		2B105A4B19783314008528CB /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B105A4A19783314008528CB /* CoreAudio.framework */; };
+		2B1FEB86199FA2DC0001D6B5 /* PitchInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1FEB85199FA2DC0001D6B5 /* PitchInfo.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +93,8 @@
 		2B0F42581972ACA900214A26 /* WaveFFTCepstrumHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WaveFFTCepstrumHelper.cpp; sourceTree = "<group>"; };
 		2B0F42591972ACA900214A26 /* WaveFFTCepstrumHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaveFFTCepstrumHelper.h; sourceTree = "<group>"; };
 		2B105A4A19783314008528CB /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		2B1FEB84199FA2DC0001D6B5 /* PitchInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PitchInfo.h; sourceTree = "<group>"; };
+		2B1FEB85199FA2DC0001D6B5 /* PitchInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PitchInfo.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,6 +236,8 @@
 				2B0F42551972AC9D00214A26 /* DCRejectionFilter.h */,
 				2B0F42581972ACA900214A26 /* WaveFFTCepstrumHelper.cpp */,
 				2B0F42591972ACA900214A26 /* WaveFFTCepstrumHelper.h */,
+				2B1FEB84199FA2DC0001D6B5 /* PitchInfo.h */,
+				2B1FEB85199FA2DC0001D6B5 /* PitchInfo.m */,
 			);
 			name = AudioUnits;
 			sourceTree = "<group>";
@@ -341,6 +346,7 @@
 				2B0F42191972AA6F00214A26 /* MyScene.mm in Sources */,
 				2B0F42161972AA6F00214A26 /* ViewController.mm in Sources */,
 				2B0F425A1972ACA900214A26 /* WaveFFTCepstrumHelper.cpp in Sources */,
+				2B1FEB86199FA2DC0001D6B5 /* PitchInfo.m in Sources */,
 				2B0F42101972AA6F00214A26 /* AppDelegate.m in Sources */,
 				2B0F42481972ABE200214A26 /* CADebugMacros.cpp in Sources */,
 				2B0F420C1972AA6F00214A26 /* main.m in Sources */,
